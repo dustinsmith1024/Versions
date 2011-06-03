@@ -1,0 +1,21 @@
+Versions
+
+This is an attempt to make a simple API for version tagging on a (my) blog.  It is going to be a simple REST API that runs on node.js.
+
+It should attach to a blog with 1 line of code.
+
+Something like:  
+
+  http://versions.heroku.com/nodejs/v0.4.3/
+
+  Will return:
+
+  [ { language: "node.js",
+      version_request: "v0.4.3",
+      current_version: "v0.4.4",
+      is_current:, "no",
+      is_current_minor: "no",
+      is_current_major: "yes",
+      link: "http://node.js"
+  } ]
+
