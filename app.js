@@ -36,13 +36,24 @@ app.get('/all', (req, res) ->
      res.send(users,{ 'Content-Type': 'text/plain' })
   )
 )
+VersionProvider = require('./userProvider').VersionProvider
+VersionProvider = new VersionProvider()
+VersionProvider.language = "Node.js"
+VersionProvider.save
+
+app.get('/versions', (req, res) ->
+  VersionProvider.findAll( (error, versions) ->
+     console.log(versions)
+     res.send(versions,{ 'Content-Type': 'text/plain' })
+  )
+)
 
 app.post('/users/new', (req, res) ->
   console.log("POST Request: " + key + " " + value) for own key, value of req.body
   #User = mongoose.model('User')
-  user = new User()
-  user.name = req.body.name
-  user.save( (err) ->
+  #user = new UserProvider()
+  UserProvider.name = req.body.name
+  UserProvider.save( (err) ->
     if(!err)
       console.log('Success!')
   )

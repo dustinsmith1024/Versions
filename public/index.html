@@ -1,11 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
+  <link type="text/css" rel="stylesheet" media="screen" href="/stylesheets/versions.css">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
 </head>
 <body>
-  <form action="/users/new/" method="POST" >
-    <input name="name" type="text" value="Enter Name:" />
-    <input type="submit" />
+<h1>D-Versioner</h1>
+  <form action="/versions/new/" method="POST" >
+    <fieldset>
+      <h2>Add New Language or Version</h2>
+      <p>
+        <label for"language">Language or Framework Name: <br/> </label><input name="language" type="text"  />
+      </p>
+      <p>
+        <label for="number">Version Number (use the languages format): <br/> </label><input name="number" type="text" />
+      </p>
+      <input type="submit" />
+    </fieldset>
   </form>
 </body>
 </html>

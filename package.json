@@ -1,0 +1,9 @@
+{
+  "name": "versions",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "2.3.4",
+    "coffee-script", "1.1.1"
+  }
+}
+
