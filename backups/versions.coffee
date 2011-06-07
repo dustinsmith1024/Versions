@@ -1,7 +1,19 @@
 express = require('express')
-Version = require('./models/versions').VersionModel
-Version = new Version()
+mongoose = require('mongoose')
+Schema = mongoose.Schema;
 
+VersionSchema = new Schema({
+  language: String,
+  number: String
+})
+
+mongoose.connect('mongodb://localhost/versionsdb')
+mongoose.model('Version',VersionSchema)
+
+disconnect = () ->
+  mongoose.disconnect()
+
+Version = mongoose.model('Version')
 app = module.exports = express.createServer()
 
 # BASIC CONFIGURATION FOR EXPRESS
@@ -27,9 +39,43 @@ app.configure('production', () ->
   app.use(express.errorHandler())
 )
 
+newVersion = (params, callback) ->
+  console.log(params)
+  version = new Version()
+  version.language = params.language
+  version.number = params.number
+  version.save( (err) ->
+    throw err if err
+    findLatest((err, version) ->
+      throw err if err
+      callback(null, "Added " + version[0].language + " " + version[0].number)
+    )
+  )
+
+findLatest = (callback) ->
+  Version.find({}).sort("_id",-1).limit(1).run( (err, versions) ->
+    throw err if err
+    console.log(versions)
+    callback(null, versions)
+  )
+
+findRecent = (callback, amount = 5) ->
+  Version.find({}).sort("_id",-1).limit(amount).run( (err, versions) ->
+    throw err if err
+    console.log(versions)
+    callback(null, versions)
+  )
+
+findAll = (callback) ->
+  Version.find({}, (err, versions) ->
+    throw err if err
+    console.log(versions)
+    callback(null, versions)
+  )
+
 app.get('/new', (req, res) ->
   console.log("new version request")
-  Version.newVersion((err, status) ->
+  newVersion((err, status) ->
     throw err if err
     console.log(status)
     res.send(status)
@@ -39,20 +85,17 @@ app.get('/new', (req, res) ->
 app.post('/versions/new', (req, res) ->
   console.log("POST: new version request")
   console.log(req.body)
-  Version.newVersion(req.body, (err, status) ->
+  newVersion(req.body, (err, status) ->
     if err
       throw err
-    if status is "success"
-      Version.findLatest( (err, version) ->
-        console.log(version)
-        res.send(version, { 'Content-Type': 'text/plain' })
-      )
-    )
+    console.log(status)
+    res.send(status, { 'Content-Type': 'text/plain' })
   )
+)
 
 app.get('/versions', (req, res) ->
   console.log("versions request")
-  Version.findAll((err, versions) ->
+  findAll((err, versions) ->
     if err
       throw err
     console.log(versions)
@@ -63,7 +106,7 @@ app.get('/versions', (req, res) ->
 app.get("/versions/current/:amount?", (req, res) ->
   console.log("current versions request - params: " + req.params.amount)
   amount = if req.params.amount then req.params.amount else 5
-  Version.findRecent((err, versions) ->
+  findRecent((err, versions) ->
     if err
       throw err
     console.log(versions)
