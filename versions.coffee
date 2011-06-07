@@ -1,8 +1,24 @@
 express = require('express')
+io = require('socket.io')
 Version = require('./models/versions').VersionModel
 Version = new Version()
 
 app = module.exports = express.createServer()
+
+socket = io.listen(app)
+
+socket.on('connection', (client) ->
+  username = ''
+  client.send('Welcome to this socket.io chat server!')
+  client.send('Please input your username: ')
+  client.on('message',(message) -> 
+    if (!username)
+      username = message
+      client.send('Welcome, ' + username + '!')
+    
+    socket.broadcast(username + ' sent: ' + message);
+  )  
+)
 
 # BASIC CONFIGURATION FOR EXPRESS
 app.configure( () ->
