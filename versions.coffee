@@ -16,6 +16,7 @@ socket.on('connection', (client) ->
       username = message
       client.send('Welcome, ' + username + '!')
     
+    client.send(username + 'sent private: ' + message);
     socket.broadcast(username + ' sent: ' + message);
   )  
 )
@@ -88,4 +89,3 @@ app.get("/versions/current/:amount?", (req, res) ->
 )
 
 app.listen(3000)
-
